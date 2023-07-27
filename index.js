@@ -48,7 +48,8 @@ app.get('/api/movies/:id', (req, res) => {
 
 // Add movie:
 app.post('/api/movies', (req, res) => {
-  const { title, director, year, genre, rating, poster, plot } = req.body;
+  const { title, director, year, genre, rating, poster, plot, duration } =
+    req.body;
 
   const safeValues = [
     title,
@@ -58,11 +59,12 @@ app.post('/api/movies', (req, res) => {
     poster ?? '',
     rating ?? 0,
     plot,
+    duration,
   ];
 
   pool
     .query(
-      'INSERT INTO movies (title,director,year,genre,poster,rating,plot) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *;',
+      'INSERT INTO movies (title,director,year,genre,poster,rating,plot,duration) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;',
       safeValues
     )
     .then(({ rows }) => {
@@ -75,11 +77,22 @@ app.post('/api/movies', (req, res) => {
 // Update movie:
 app.put('/api/movies/:id', (req, res) => {
   const { id } = req.params;
-  const { title, director, year, genre, rating, poster, plot } = req.body;
-  const safeValues = [title, director, year, genre, rating, poster, plot, id];
+  const { title, director, year, genre, rating, poster, plot, duration } =
+    req.body;
+  const safeValues = [
+    title,
+    director,
+    year,
+    genre,
+    rating,
+    poster,
+    plot,
+    duration,
+    id,
+  ];
   pool
     .query(
-      'UPDATE movies SET title=$1,director=$2,year=$3,genre=$4,rating=$5,poster=$6,plot=$7 WHERE id=$8 RETURNING *;',
+      'UPDATE movies SET title=$1,director=$2,year=$3,genre=$4,rating=$5,poster=$6,plot=$7,duration=$8 WHERE id=$9 RETURNING *;',
       safeValues
     )
     .then(({ rows }) => {
