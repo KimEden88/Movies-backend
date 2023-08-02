@@ -27,6 +27,17 @@ app.get('/api/movies', (req, res) => {
     .catch((e) => res.status(500).json({ message: e.message }));
 });
 
+//Get 3 Random movies:
+app.get('/api/movies/random', (req, res) => {
+  pool
+    .query('SELECT * FROM movies ORDER BY RANDOM() LIMIT 1;')
+    .then((data) => {
+      console.log(data);
+      res.json(data.rows);
+    })
+    .catch((e) => res.status(500).json({ message: e.message }));
+});
+
 app.listen(PORT, () => console.log(`SERVER IS UP ON ${PORT}`));
 
 // Get movie by id:
@@ -50,14 +61,15 @@ app.get('/api/movies/:id', (req, res) => {
 app.post('/api/movies', (req, res) => {
   const { title, director, year, genre, rating, poster, plot, duration } =
     req.body;
+  console.log(req.body);
 
   const safeValues = [
     title,
     director,
     year,
-    genre ?? '',
-    poster ?? '',
-    rating ?? 0,
+    genre,
+    poster,
+    rating,
     plot,
     duration,
   ];
